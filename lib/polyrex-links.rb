@@ -22,12 +22,12 @@ class PolyrexLinks
 
     mask = "records/link[summary/name='%s']"
     
-    do 
+    begin 
       c = a2.shift; xpath = c.map{|x| mask % x}.join + '/summary/url/text()'
       r = @polyrex.element xpath 
     end until r or a2.empty?
     
-    r + path.sub(c.join('/'),'')
+    r ? r + path.sub(c.join('/'),'') : nil
   end
 
   def to_xml(options={})
