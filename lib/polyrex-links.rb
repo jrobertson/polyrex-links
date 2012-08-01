@@ -23,7 +23,9 @@ class PolyrexLinks < Polyrex
       r = self.element xpath 
     end until r or a2.empty?
     
-    r ? r + path.sub(c.join('/'),'') : nil
+    # return the found path along with any remaining string which 
+    #   it didn't find, or it will return nil.
+    r ? [r + path.sub(c.join('/'),''), path.sub(c.join('/'),'')] : nil
   end
 
 end
