@@ -8,6 +8,7 @@ class PolyrexLinks < Polyrex
 
   def initialize(x='links/link[name,url]')
     super(x)
+    self.delimiter = ' # '
   end
 
   def locate(path)
