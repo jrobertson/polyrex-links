@@ -13,7 +13,7 @@ class PolyrexLinks < Polyrex
 
   def locate(path)
     
-    a = path.split('/')
+    a = path.sub(/^\//,'').split('/')
     a2 = []
     (a2 << a.clone; a.pop) while a.any?
 
