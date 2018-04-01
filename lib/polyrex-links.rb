@@ -6,14 +6,16 @@ require 'polyrex'
 
 class PolyrexLinks < Polyrex
 
-  def initialize(x='links/link[name,url]')
+  def initialize(x='links/link[name,url]', delimiter: ' # ', debug: false)
     super(x)
-    self.delimiter = ' # '
+    self.delimiter = delimiter
+    @debug = debug
   end
 
-  def locate(path)
+  def locate(raw_path)
     
-    a = path.sub(/^\//,'').split('/')
+    path = raw_path.sub(/^\//,'')
+    a = path.split('/')
     a2 = []
     (a2 << a.clone; a.pop) while a.any?
 
@@ -26,7 +28,10 @@ class PolyrexLinks < Polyrex
     
     # return the found path along with any remaining string which 
     #   it didn't find, or it will return nil.
-    r ? [r + path.sub(c.join('/'),''), path.sub(c.join('/'),'')] : nil
+    
+    puts "c: %s\npath: %s\nr: %s" % [c, path, r].map(&:inspect) if @debug
+    
+    r ? [r, path.sub(c.join('/'),'')] : nil
   end
 
 end
