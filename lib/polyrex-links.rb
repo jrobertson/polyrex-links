@@ -23,12 +23,14 @@ class PolyrexLinks < Polyrex
   # Returns the url and remaining arguments for the given path
   #
   def locate(raw_path)
-    
+   
+    return nil if raw_path.nil? or raw_path.strip.empty?
     path = raw_path.sub(/^\//,'')
     a = path.split('/')
     a2 = []
     (a2 << a.clone; a.pop) while a.any?
-
+    return nil if a2.empty?
+    
     mask = "records/link[summary/name='%s']"
     
     begin 
