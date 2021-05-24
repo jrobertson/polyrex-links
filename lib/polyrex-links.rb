@@ -12,6 +12,19 @@ class PolyrexLinks < Polyrex
     @debug = debug
   end
   
+  def find(s)
+    
+    found = find_by_link_name s
+    
+    if found then
+      
+      path = backtrack_path found 
+      [locate(path.join('/')), path.join('/')]
+      
+    end
+    
+  end
+  
   # Returns the Polyrex element for the given path
   #
   def link(s)
@@ -60,6 +73,14 @@ class PolyrexLinks < Polyrex
   end
   
   private
+  
+  def backtrack_path(e, a5=[])
+
+    backtrack_path(e.parent, a5)  if e.parent?
+    a5 << e.name
+
+    return a5
+  end
   
 
   def each_link()
