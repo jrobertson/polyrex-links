@@ -6,11 +6,11 @@ require 'polyrex'
 
 class PolyrexLinks < Polyrex
 
-  def initialize(rawx='links/link[name,url]', delimiter: ' # ', debug: false)
+  def initialize(rawx='links/link[title,url]', delimiter: ' # ', debug: false)
     
     x, _ = RXFHelper.read(rawx)
     obj = x.lstrip.sub(/<\?polyrex-links\?>/, 
-                  '<?polyrex schema="links/link[name,url]" delimiter=" # "?>')
+                  '<?polyrex schema="links/link[title,url]" delimiter=" # "?>')
     puts 'obj: ' + x.inspect if debug
     
     super(obj)
@@ -21,7 +21,7 @@ class PolyrexLinks < Polyrex
   
   def find(s)
     
-    found = find_by_link_name s
+    found = find_by_link_title s
     
     if found then
       
@@ -39,7 +39,7 @@ class PolyrexLinks < Polyrex
                           s.sub(/<\?[^\?]+\?>/,'').lstrip)
           
     pl.each_recursive do |x|
-      link, linkpath = find(x.name)
+      link, linkpath = find(x.title)
       x.url = link.url if link and link.url
     end
     
@@ -51,7 +51,7 @@ class PolyrexLinks < Polyrex
   #
   def link(s)
     
-    self.rxpath(s.split('/').map {|x| "link[name='%s']" % x}.join('/')).first
+    self.rxpath(s.split('/').map {|x| "link[title='%s']" % x}.join('/')).first
     
   end
   
@@ -66,7 +66,7 @@ class PolyrexLinks < Polyrex
     (a2 << a.clone; a.pop) while a.any?
     return nil if a2.empty?
     
-    mask = "records/link[summary/name='%s']"
+    mask = "records/link[summary/title='%s']"
     
     begin 
       c = a2.shift; xpath = c.map{|x| mask % x}.join + '/summary/url/text()'
@@ -103,7 +103,7 @@ class PolyrexLinks < Polyrex
   def backtrack_path(e, a5=[])
 
     backtrack_path(e.parent, a5)  if e.parent?
-    a5 << e.name
+    a5 << e.title
 
     return a5
   end
@@ -117,7 +117,7 @@ class PolyrexLinks < Polyrex
       
         a.slice!(i..-1)
         a[i] = record
-        yield(a.map(&:name).join('/'), record.url) if block_given?
+        yield(a.map(&:title).join('/'), record.url) if block_given?
         
     end
              
