@@ -6,10 +6,17 @@ require 'polyrex'
 
 class PolyrexLinks < Polyrex
 
-  def initialize(x='links/link[name,url]', delimiter: ' # ', debug: false)
-    super(x)
+  def initialize(rawx='links/link[name,url]', delimiter: ' # ', debug: false)
+    
+    x, _ = RXFHelper.read(rawx)
+    obj = x.lstrip.sub(/<\?polyrex-links\?>/, 
+                  '<?polyrex schema="links/link[name,url]" delimiter=" # "?>')
+    puts 'obj: ' + x.inspect if debug
+    
+    super(obj)
     @delimiter = self.delimiter = delimiter
     @debug = debug
+    
   end
   
   def find(s)
@@ -19,9 +26,23 @@ class PolyrexLinks < Polyrex
     if found then
       
       path = backtrack_path found 
-      [locate(path.join('/')), path.join('/')]
+      [link(path.join('/')), path.join('/')]
       
     end
+    
+  end
+  
+  def migrate(raws)
+    
+    s, _ = RXFHelper.read(raws)
+    pl = PolyrexLinks.new("<?polyrex-links?>\n\n" + s.sub(/<\?[^\?]+\?>/,'').lstrip)
+          
+    pl.each_recursive do |x|
+      link, linkpath = find(x.name)
+      x.url = link.url if link.url
+    end
+    
+    pl
     
   end
   
