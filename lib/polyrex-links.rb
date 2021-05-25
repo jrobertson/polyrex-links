@@ -35,11 +35,12 @@ class PolyrexLinks < Polyrex
   def migrate(raws)
     
     s, _ = RXFHelper.read(raws)
-    pl = PolyrexLinks.new("<?polyrex-links?>\n\n" + s.sub(/<\?[^\?]+\?>/,'').lstrip)
+    pl = PolyrexLinks.new("<?polyrex-links?>\n\n" + 
+                          s.sub(/<\?[^\?]+\?>/,'').lstrip)
           
     pl.each_recursive do |x|
       link, linkpath = find(x.name)
-      x.url = link.url if link.url
+      x.url = link.url if link and link.url
     end
     
     pl
@@ -91,6 +92,10 @@ class PolyrexLinks < Polyrex
     each_link {|key, value| h[key] = value }
     h
     
+  end
+  
+  def to_s()
+    "<?polyrex-links?>\n\n" + super(header: false)
   end
   
   private
