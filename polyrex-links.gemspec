@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'polyrex-links'
-  s.version = '0.4.2'
+  s.version = '0.4.3'
   s.summary = 'A convenient gem for retrieving a link from a ' + 
       'hierarchical lookup table from a raw Polyrex document format'
   s.authors = ['James Robertson']

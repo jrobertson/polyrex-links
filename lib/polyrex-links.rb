@@ -32,6 +32,16 @@ class PolyrexLinks < Polyrex
     
   end
   
+  # returns a listing of all links sorted by title in alphabetical order
+  #
+  def index()
+    
+    a = []
+    each_recursive {|link|  a << [link.title, link.url, backtrack_path(link)] }
+    a.sort_by {|title, _, _| title.downcase}
+    
+  end
+  
   def migrate(raws)
     
     s, _ = RXFHelper.read(raws)
@@ -79,6 +89,13 @@ class PolyrexLinks < Polyrex
     puts "c: %s\npath: %s\nr: %s" % [c, path, r].map(&:inspect) if @debug
 
     r ? [r, path.sub(c.join('/'),'')] : nil
+  end
+  
+  def save(filepath)
+    
+    super(filepath)
+    export(filepath.sub(/\.xml$/,'.txt'))
+    
   end
   
   
